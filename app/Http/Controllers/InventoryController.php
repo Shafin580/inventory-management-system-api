@@ -24,8 +24,7 @@ class InventoryController extends Controller
         } else {
             return response()->json([
                 "status_code" => 500,
-                "message" => "No records to show!",
-                500
+                "message" => "No records to show!"
             ]);
         }
 
@@ -49,14 +48,12 @@ class InventoryController extends Controller
 
             return response()->json([
                 "status_code" => 200,
-                "results" => $inventoryData,
-                200
+                "results" => $inventoryData
             ]);
         } else {
             return response()->json([
                 "status_code" => 500,
-                "message" => "No records to show!",
-                500
+                "message" => "No records to show!"
             ]);
         }
     }
@@ -80,8 +77,7 @@ class InventoryController extends Controller
         if ($validatedData->fails()) {
             return response()->json([
                 "status_code" => 400,
-                "message" => $validatedData->errors()->all(),
-                400
+                "message" => $validatedData->errors()->all()
             ]);
         }
 
@@ -106,21 +102,18 @@ class InventoryController extends Controller
 
                 return response()->json([
                     "status_code" => 201,
-                    "message" => "Inventory successfully created!",
-                    201
+                    "message" => "Inventory successfully created!"
                 ]);
             } else {
                 return response()->json([
                     "status_code" => 400,
-                    "message" => "Failed to create inventory!",
-                    400
+                    "message" => "Failed to create inventory!"
                 ]);
             }
         } else {
             return response()->json([
                 "status_code" => 400,
-                "message" => "Failed to create inventory!",
-                400
+                "message" => "Failed to create inventory!"
             ]);
         }
     }
@@ -141,8 +134,7 @@ class InventoryController extends Controller
         if ($validatedData->fails()) {
             return response()->json([
                 "status_code" => 400,
-                "message" => $validatedData->errors()->all(),
-                400
+                "message" => $validatedData->errors()->all()
             ]);
         }
 
@@ -158,14 +150,12 @@ class InventoryController extends Controller
 
             return response()->json([
                 "status_code" => 200,
-                "message" => "Inventory successfully updated!",
-                200
+                "message" => "Inventory successfully updated!"
             ]);
         } else {
             return response()->json([
                 "status_code" => 400,
-                "message" => "Failed to update inventory!",
-                400
+                "message" => "Failed to update inventory!"
             ]);
         }
     }
@@ -180,21 +170,18 @@ class InventoryController extends Controller
             if ($inventoryUserPivotData->delete()) {
                 return response()->json([
                     "status_code" => 200,
-                    "message" => "Inventory successfully deleted!",
-                    200
+                    "message" => "Inventory successfully deleted!"
                 ]);
             } else {
                 return response()->json([
                     "status_code" => 400,
-                    "message" => "Failed to delete inventory!",
-                    400
+                    "message" => "Failed to delete inventory!"
                 ]);
             }
         } else {
             return response()->json([
                 "status_code" => 400,
-                "message" => "Failed to delete inventory!",
-                400
+                "message" => "Failed to delete inventory!"
             ]);
         }
     }
