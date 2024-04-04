@@ -14,9 +14,14 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials)) {
-            $token = Auth::user()->createToken('AuthToken')->accessToken;
+            $user = Auth::user();
+            $userData = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+            ];
 
-            return response()->json(['status_code' => 200, 'token' => "Bearer " . $token]);
+            return response()->json(['status_code' => 200, 'results' => $userData]);
         }
 
         return response()->json(['status_code' => 401, 'message' => 'Invalid Credentials']);
