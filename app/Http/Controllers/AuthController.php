@@ -21,7 +21,7 @@ class AuthController extends Controller
                 'email' => $user->email,
             ];
 
-            return response()->json(['status_code' => 200, 'results' => $userData]);
+            return response()->json(['status_code' => 200, 'user' => $userData, 'token' => "Bearer " . "token"]);
         }
 
         return response()->json(['status_code' => 401, 'message' => 'Invalid Credentials']);

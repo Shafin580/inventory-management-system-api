@@ -11,9 +11,10 @@ class InventoryController extends Controller
     /**
      * show all inventories.
      */
-    public function getAll()
+    public function getAll(Request $request)
     {
-        $userId = auth()->id();
+        // $userId = auth()->id();
+        $userId = $request->userId;
         $inventoryUserPivotData = InventoryUserPivot::where('user_id', $userId)->get();
         $validInventoryIds = [];
 
@@ -87,7 +88,8 @@ class InventoryController extends Controller
         ];
 
         $inventory = Inventory::create($inventoryData);
-        $userId = auth()->id();
+        // $userId = auth()->id();
+        $userId = $request->userId;
 
         if ($inventory) {
 
@@ -118,7 +120,7 @@ class InventoryController extends Controller
         }
     }
 
-    public function update(Request $request, Inventory $inventory)
+    public function update(Request $request)
     {
         $validatedData = validator(
             $request->only(
@@ -137,6 +139,7 @@ class InventoryController extends Controller
                 "message" => $validatedData->errors()->all()
             ]);
         }
+        $inventory = Inventory::where('id', $request->id)->first();
 
         if (isset($request->name)) {
             $inventory->name = $request->name;
@@ -163,9 +166,10 @@ class InventoryController extends Controller
     /**
      * Remove a specified inventory.
      */
-    public function delete(Inventory $inventory)
+    public function delete(Request $request)
     {
-        $inventoryUserPivotData = InventoryUserPivot::where('inventory_id', $inventory->id)->first();
+        $inventory = Inventory::where('id', $request->inventoryId)->first();
+        $inventoryUserPivotData = InventoryUserPivot::where('inventory_id', $request->inventoryId)->first();
         if ($inventory->delete()) {
             if ($inventoryUserPivotData->delete()) {
                 return response()->json([

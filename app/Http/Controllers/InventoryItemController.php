@@ -14,15 +14,16 @@ class InventoryItemController extends Controller
     /**
      * show all inventory items
      */
-    public function getAll(Inventory $inventory)
+    public function getAll(Request $request)
     {
-        $userId = auth()->id();
+        // $userId = auth()->id();
+        $userId = $request->userId;
         $inventoryUserPivotData = InventoryUserPivot::where('user_id', $userId)->get();
         $isValid = false;
 
         if (count($inventoryUserPivotData) > 0) {
             foreach ($inventoryUserPivotData as $value) {
-                if ($value->inventory_id == $inventory->id) {
+                if ($value->inventory_id == $request->inventoryId) {
                     $isValid = true;
                 }
             }
@@ -35,7 +36,7 @@ class InventoryItemController extends Controller
             ]);
         }
 
-        $inventoryItemList = InventoryItem::where('inventory_id', $inventory->id)->get();
+        $inventoryItemList = InventoryItem::where('inventory_id', $request->inventoryId)->get();
         $inventoryItemData = [];
 
         if (count($inventoryItemList) > 0) {
@@ -95,14 +96,15 @@ class InventoryItemController extends Controller
         $productImage = $request->file('image');
         $productImagePath = null;
         if (!empty($productImage)) {
-            // dd('hello' );
             $path = public_path() . '/media/images/';
             if (!FacadesFile::isDirectory($path)) {
-                Storage::makeDirectory($path, $mode = 0777, true, true);
+                Storage::makeDirectory($path, 0777, true, true);
+            } else {
+                // FacadesFile::chmod($path, 0777); // Set the permissions of the directory to 0777
             }
             $imageName = time() . '_'  . $request->name . '.' . $productImage->extension();
             $productImage->move($path, $imageName);
-            $productImagePath = $path . $imageName;
+            $productImagePath = env('APP_URL', 'http://localhost:8070') . '/media/images/' . $imageName;
         }
 
         $inventoryItemData = [
@@ -132,9 +134,11 @@ class InventoryItemController extends Controller
     /**
      * Display a specified inventory item.
      */
-    public function show(InventoryItem $inventoryItem)
+    public function show(Request $request)
     {
-        $userId = auth()->id();
+        // $userId = auth()->id();
+        $userId = $request->userId;
+        $inventoryItem = InventoryItem::where('id', $request->id)->first();
         $inventoryUserPivotData = InventoryUserPivot::where('user_id', $userId)->get();
         $isValid = false;
 
@@ -169,7 +173,7 @@ class InventoryItemController extends Controller
     /**
      * Update a specified inventory item.
      */
-    public function update(Request $request, InventoryItem $inventoryItem)
+    public function update(Request $request)
     {
         $validatedData = validator(
             $request->only(
@@ -195,19 +199,21 @@ class InventoryItemController extends Controller
             ]);
         }
 
-
         $productImage = $request->file('image');
         $productImagePath = null;
         if (!empty($productImage)) {
-            // dd('hello' );
             $path = public_path() . '/media/images/';
             if (!FacadesFile::isDirectory($path)) {
-                Storage::makeDirectory($path, $mode = 0777, true, true);
+                Storage::makeDirectory($path, 0777, true, true);
+            } else {
+                // FacadesFile::chmod($path, 0777); // Set the permissions of the directory to 0777
             }
             $imageName = time() . '_'  . $request->name . '.' . $productImage->extension();
             $productImage->move($path, $imageName);
-            $productImagePath = $path . $imageName;
+            $productImagePath = env('APP_URL', 'http://localhost:8070') . '/media/images/' . $imageName;
         }
+
+        $inventoryItem = InventoryItem::where('id', $request->id)->first();
 
         if (isset($request->name)) {
             $inventoryItem->name = $request->name;
@@ -242,8 +248,10 @@ class InventoryItemController extends Controller
     /**
      * Remove a specified inventory item.
      */
-    public function delete(InventoryItem $inventoryItem)
+    public function delete(Request $request)
     {
+        $inventoryItem = InventoryItem::where('id', $request->id)->first();
+
         if ($inventoryItem->delete()) {
 
             return response()->json([
